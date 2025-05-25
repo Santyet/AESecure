@@ -8,7 +8,7 @@ import platform
 class FileEncryptorApp:
     def __init__(self, master):
         self.master = master
-        master.title("Cifrador / Descifrador de Archivos")
+        master.title("File Encryptor / Decryptor")
         master.geometry("630x450")
         master.configure(bg="#f9f9f9")
 
@@ -24,9 +24,9 @@ class FileEncryptorApp:
         self.tab_encrypt = ttk.Frame(self.notebook)
         self.tab_decrypt = ttk.Frame(self.notebook)
 
-        self.notebook.add(self.tab_intro, text='📝 Instrucciones')
-        self.notebook.add(self.tab_encrypt, text='🔒 Cifrar')
-        self.notebook.add(self.tab_decrypt, text='🔓 Descifrar')
+        self.notebook.add(self.tab_intro, text='📝 Instructions')
+        self.notebook.add(self.tab_encrypt, text='🔒 Encrypt')
+        self.notebook.add(self.tab_decrypt, text='🔓 Decrypt')
         self.notebook.pack(expand=True, fill='both', padx=10, pady=10)
 
         self.setup_intro_tab()
@@ -41,20 +41,20 @@ class FileEncryptorApp:
         frame = tk.Frame(self.tab_intro, bg="#f9f9f9")
         frame.pack(fill='both', expand=True, padx=20, pady=20)
 
-        label = tk.Label(frame, text="Bienvenido", font=("Segoe UI", 16, "bold"), bg="#f9f9f9")
+        label = tk.Label(frame, text="Welcome", font=("Segoe UI", 16, "bold"), bg="#f9f9f9")
         label.pack(anchor='w')
 
         desc = (
-            "Este programa permite proteger tus archivos de manera segura:\n\n"
-            "Cifrado: Usa contraseña + AES para proteger un archivo.\n"
-            "Descifrado: Recupera el archivo original si ingresas la contraseña correcta.\n"
-            "Seguridad: Se usa PBKDF2 para derivar la clave y SHA-256 para verificar integridad.\n\n"
-            "Puedes arrastrar y soltar archivos o usar Ctrl+V para pegar rutas."
+            "This program allows you to securely protect your files:\n\n"
+            "Encryption: Uses password + AES to protect a file.\n"
+            "Decryption: Recovers the original file with the correct password.\n"
+            "Security: PBKDF2 is used to derive the key and SHA-256 for integrity verification.\n\n"
+            "You can drag and drop files or use Ctrl+V to paste paths."
         )
         desc_label = tk.Label(frame, text=desc, font=("Segoe UI", 11), bg="#f9f9f9")
         desc_label.pack(anchor='w', pady=10)
 
-        self.history_label = tk.Label(frame, text="🕘 Historial de archivos:", font=("Segoe UI", 12, "bold"), bg="#f9f9f9")
+        self.history_label = tk.Label(frame, text="🕘 File history:", font=("Segoe UI", 12, "bold"), bg="#f9f9f9")
         self.history_label.pack(anchor='w', pady=(10, 0))
         self.history_list = tk.Listbox(frame, height=5, font=("Segoe UI", 9))
         self.history_list.pack(fill='x')
@@ -64,12 +64,12 @@ class FileEncryptorApp:
         frame = tk.Frame(self.tab_encrypt, bg="#f9f9f9")
         frame.pack(fill='both', expand=True)
 
-        label = tk.Label(frame, text="🔒 Cifrado de archivo", font=("Segoe UI", 14, "bold"), bg="#f9f9f9")
+        label = tk.Label(frame, text="🔒 File Encryption", font=("Segoe UI", 14, "bold"), bg="#f9f9f9")
         label.pack(pady=(20, 10))
 
         self.encrypt_button = tk.Button(
             frame,
-            text="Seleccionar archivo y cifrar",
+            text="Select file and encrypt",
             bg="#0066cc",
             fg="white",
             font=("Segoe UI", 11),
@@ -81,7 +81,7 @@ class FileEncryptorApp:
 
         note_label = tk.Label(
             frame,
-            text="ℹ️ El archivo cifrado se guardará con extensión .enc en la misma carpeta.",
+            text="ℹ️ The encrypted file will be saved with .enc extension in the same folder.",
             font=("Segoe UI", 9),
             bg="#f9f9f9",
             fg="#555555"
@@ -92,12 +92,12 @@ class FileEncryptorApp:
         frame = tk.Frame(self.tab_decrypt, bg="#f9f9f9")
         frame.pack(fill='both', expand=True)
 
-        label = tk.Label(frame, text="🔓 Descifrado de archivo", font=("Segoe UI", 14, "bold"), bg="#f9f9f9")
+        label = tk.Label(frame, text="🔓 File Decryption", font=("Segoe UI", 14, "bold"), bg="#f9f9f9")
         label.pack(pady=(20, 10))
 
         self.decrypt_button = tk.Button(
             frame,
-            text="Seleccionar archivo y descifrar",
+            text="Select file and decrypt",
             bg="#28a745",
             fg="white",
             font=("Segoe UI", 11),
@@ -109,7 +109,7 @@ class FileEncryptorApp:
 
         note_label = tk.Label(
             frame,
-            text="ℹ️ El archivo descifrado se guardará en la misma carpeta con su formato original.",
+            text="ℹ️ The decrypted file will be saved in the same folder with its original format.",
             font=("Segoe UI", 9),
             bg="#f9f9f9",
             fg="#555555"
@@ -118,12 +118,12 @@ class FileEncryptorApp:
 
     def ask_validated_password(self):
         popup = tk.Toplevel(self.master)
-        popup.title("Contraseña")
+        popup.title("Password")
         popup.geometry("300x150")
         popup.transient(self.master)
         popup.grab_set()
 
-        label = tk.Label(popup, text="Introduce la contraseña:", font=("Segoe UI", 10))
+        label = tk.Label(popup, text="Enter your password:", font=("Segoe UI", 10))
         label.pack(pady=(10, 5))
 
         pw_var = tk.StringVar()
@@ -137,11 +137,11 @@ class FileEncryptorApp:
         def check_strength(*_):
             pw = pw_var.get()
             if len(pw) < 6:
-                strength_label.config(text="Fortaleza: Débil", fg="red")
+                strength_label.config(text="Strength: Weak", fg="red")
             elif any(c.isdigit() for c in pw) and any(c.isupper() for c in pw) and any(c in '!@#$%^&*' for c in pw):
-                strength_label.config(text="Fortaleza: Fuerte", fg="green")
+                strength_label.config(text="Strength: Strong", fg="green")
             else:
-                strength_label.config(text="Fortaleza: Media", fg="orange")
+                strength_label.config(text="Strength: Medium", fg="orange")
 
         pw_var.trace_add('write', check_strength)
 
@@ -150,12 +150,12 @@ class FileEncryptorApp:
         def submit():
             pw = pw_var.get()
             if len(pw) < 6:
-                messagebox.showwarning("Contraseña débil", "La contraseña debe tener al menos 6 caracteres.", parent=popup)
+                messagebox.showwarning("Weak password", "Password must be at least 6 characters long.", parent=popup)
             else:
                 result['password'] = pw
                 popup.destroy()
 
-        button = tk.Button(popup, text="Aceptar", command=submit)
+        button = tk.Button(popup, text="OK", command=submit)
         button.pack(pady=10)
 
         self.master.wait_window(popup)
@@ -179,7 +179,7 @@ class FileEncryptorApp:
             return
         try:
             output_path = encrypt_file(file_path, password)
-            messagebox.showinfo("✅ Éxito", f"Archivo cifrado en:\n{output_path}")
+            messagebox.showinfo("✅ Success", f"File encrypted at:\n{output_path}")
             self.add_to_history(output_path)
         except Exception as e:
             messagebox.showerror("❌ Error", str(e))
@@ -190,7 +190,7 @@ class FileEncryptorApp:
             return
         try:
             output_path = decrypt_file(file_path, password)
-            messagebox.showinfo("✅ Éxito", f"Archivo descifrado en:\n{output_path}")
+            messagebox.showinfo("✅ Success", f"File decrypted at:\n{output_path}")
             self.add_to_history(output_path)
         except Exception as e:
             messagebox.showerror("❌ Error", str(e))
@@ -233,4 +233,4 @@ class FileEncryptorApp:
                 else:
                     subprocess.run(['xdg-open', folder])
             except Exception as e:
-                messagebox.showerror("Error", f"No se pudo abrir la carpeta:\n{e}")
+                messagebox.showerror("Error", f"Could not open folder:\n{e}")

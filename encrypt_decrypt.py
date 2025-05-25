@@ -13,7 +13,7 @@ KEY_SIZE = 32
 IV_SIZE = 12
 TAG_SIZE = 16
 ITERATIONS = 100000
-EXT_LEN_SIZE = 4  # para guardar longitud de extensión
+EXT_LEN_SIZE = 4  # for storing the length of the extension
 
 def derive_key(password: str, salt: bytes) -> bytes:
     kdf = PBKDF2HMAC(
@@ -68,12 +68,12 @@ def decrypt_file(file_path, password):
     try:
         plaintext = decryptor.update(ciphertext) + decryptor.finalize()
     except InvalidTag:
-        raise ValueError("La contraseña es incorrecta o los datos están corruptos.")
+        raise ValueError("The password is incorrect or the data is corrupted.")
 
     if hashlib.sha256(plaintext).digest() != stored_hash:
-        raise ValueError("La verificación de integridad ha fallado.")
+        raise ValueError("Integrity verification failed.")
 
-    decrypted_path = file_path.replace(".enc", "") + "_descifrado" + ext
+    decrypted_path = file_path.replace(".enc", "") + "_decrypted" + ext
     with open(decrypted_path, 'wb') as f:
         f.write(plaintext)
 
